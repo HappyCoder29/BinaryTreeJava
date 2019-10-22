@@ -1,5 +1,6 @@
 package edu.northeastern.ashish;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -248,4 +249,94 @@ public class BinaryTree <T> {
         System.out.println();
     }
 
+    // Get Diameter of a tree
+    public int diameter(){
+        return diameter(root);
+    }
+    // longest path from one node to another node
+    private int diameter(Node<T> node){
+        if(node == null)
+            return 0;
+
+        int lHeight = height(node.left);
+        int rHeight = height(node.right);
+
+        int lDiameter = diameter(node.left);
+        int rDiameter = diameter(node.right);
+
+        return Math.max( (lHeight + rHeight +1), Math.max(lDiameter, rDiameter) );
+
+    }
+
+    // check if the nodes are siblings
+    public boolean areSiblings(Node<T> a, Node<T> b){
+        return areSiblings(root, a, b);
+    }
+    private boolean areSiblings(Node<T> node, Node<T> a, Node<T> b){
+        if(node == null)
+            return false;
+
+        // if node's left is a and right is b or vice versa
+        // if not recurse on left and right
+        return (    node.left == a && node.right == b ||
+                node.left ==b && node.right == a ||
+                areSiblings(node.left, a, b) ||
+                areSiblings(node.right, a, b)
+        );
+    }
+
+
+
+    public Node<T> LCA(Node<T> A, Node<T> B){
+        HashSet<Node<T>> set = new HashSet<Node<T>>();
+
+        set.add(A);
+        set.add(B);
+        Node<T> currA = A;
+        Node<T> currB = B;
+        while(currA.parent != null || currB.parent != null){
+            if(set.contains(currA.parent))
+                return currA.parent;
+            if(set.contains(currB.parent))
+                return currB.parent;
+            set.add(currA);
+            set.add(currB);
+
+            currA = currA.parent;
+            currB = currB.parent;
+        }
+        return null;
+    }
+
+    public boolean isomorphic(Node<T> node1, Node<T> node2){
+        if(node1 == null && node2 == null)
+            return true;
+
+        if(node1 == null || node2 == null){
+            return false;
+        }
+
+        return (    isomorphic(node1.left, node2.left) &&
+                    isomorphic(node1.right, node2.right)
+                );
+    }
+
+    public int getlevel(T data){
+        return getlevel(root, 1, data);
+    }
+    public int getlevel(Node<T> node, int level, T data){
+        if(node == null )
+            return 0;
+
+        if(node.data.equals(data))
+            return level;
+
+        int downLevel  = getlevel(node.left , level +1, data);
+
+        if(downLevel != 0)
+            return downLevel;
+        downLevel = getlevel(node.right, level + 1, data);
+
+        return downLevel;
+    }
 }
