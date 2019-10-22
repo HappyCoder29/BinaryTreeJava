@@ -9,6 +9,20 @@ public class Main {
         tree.levelOrder();
     }
 
+
+
+    /**
+     * Function to create following tree
+     *
+     *                     1
+     *                  /     \
+     *                 2       3
+     *               /  \     /  \
+     *             4     5   6     7
+     *           /      /     \     \
+     *         8       9      10     11
+     */
+
     private static Node<Integer> CreateTree(){
         Node<Integer> root = new Node<Integer>(1);
 
