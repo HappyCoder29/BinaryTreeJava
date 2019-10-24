@@ -3,8 +3,16 @@ package edu.northeastern.ashish;
 public class Main {
 
     public static void main(String[] args) {
+
         BinaryTree<Integer> tree = new BinaryTree<Integer>();
-        tree.root = CreateTree();
+
+        Integer[] preOrder = {1,2,4,8,5,9,3,6,10,7, 11};
+        Integer[] inOrder = {8,4,2,9,5,1,6,10,3,7,11};
+        tree.root = tree.getTreeFromInorderAndPreorder(preOrder, inOrder);
+
+        //tree.root = CreateTree();
+
+       // tree.sumFromRootToLeaf(tree.root);
 
         tree.levelOrder();
     }
@@ -14,13 +22,13 @@ public class Main {
     /**
      * Function to create following tree
      *
-     *                     1
+     *                     1 -> null
      *                  /     \
-     *                 2       3
+     *                 2  ->    3 -> null
      *               /  \     /  \
-     *             4     5   6     7
+     *             4 - > 5 ->6 ->  7 -> null
      *           /      /     \     \
-     *         8       9      10     11
+     *         8  ->  9  ->  10  -> 11 -> null
      */
 
     private static Node<Integer> CreateTree(){

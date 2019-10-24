@@ -1,5 +1,9 @@
 package edu.northeastern.ashish;
 
+import javax.lang.model.type.MirroredTypeException;
+import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -247,5 +251,228 @@ public class BinaryTree <T> {
         }
         System.out.println();
     }
+
+    public boolean isBalancedTree(Node<T> node){
+        if(node == null)
+            return  true;
+
+        return  Math.abs(height(node.left) -height(node.right)) < 2
+                && isBalancedTree(node.left)
+                && isBalancedTree(node.right);
+
+    }
+
+    public boolean isSameTree(Node<T> node1, Node<T> node2){
+        if(node1 == null && node2 == null)
+            return true;
+
+        if(node1 == null ||  node2 == null)
+            return  false;
+
+        return  node1.data == node2.data
+                && isSameTree(node1.left, node2.left)
+                && isSameTree(node1.right, node2.right);
+
+    }
+
+    public boolean isSubTree(Node<T> subTree, Node<T> tree){
+        return  isSameTree(subTree, tree)
+                || isSameTree(subTree, tree.left)
+                || isSameTree(subTree, tree.right);
+
+    }
+
+    public void mirrorTree(){
+        mirrorTree(root);
+    }
+    private void mirrorTree(Node<T> node){
+        if(node == null)
+            return;
+
+        //post order
+        mirrorTree(node.left);
+        mirrorTree(node.right);
+
+        // swap nodes
+        Node temp;
+        temp = node.left;
+        node.left = node.right;
+        node.right = temp;
+    }
+
+    private boolean isIsomorphic(Node<T> node1, Node<T> node2){
+        if(node1 == null && node2 == null)
+            return  true;
+        if(node1 == null || node2 == null)
+            return  false;
+        return  isIsomorphic(node1.left, node2.left) &&
+                isIsomorphic(node1.right, node2.right);
+
+    }
+
+    public boolean isFoldable(){
+        return  isFoldable(root);
+    }
+    private boolean isFoldable(Node<T> node){
+
+        if(node == null)
+            return  true;
+
+        mirrorTree(node.left);
+
+        boolean result = isIsomorphic(node.left, node.right);
+        mirrorTree(node.left);
+        return  result;
+    }
+
+
+    public boolean isContiniousTree(Node<Integer> node){
+
+        if(node == null)
+            return  true;
+
+
+        if(node.left == null && node.right == null)
+            return true;
+
+        if(node.left == null){
+            return  Math.abs(node.data - node.right.data) <=1 &&
+                    isContiniousTree(node.right);
+        }
+
+        if(node.right == null) {
+            return Math.abs(node.data - node.left.data) <= 1 &&
+                    isContiniousTree(node.left);
+        }
+
+        return  Math.abs(node.data - node.left.data) <=1 &&
+                Math.abs(node.data - node.right.data) <=1  &&
+                isContiniousTree(node.left)&&
+                isContiniousTree(node.right);
+
+    }
+
+    public void printAllRootToLeaf(Node<Integer> node){
+        if(node == null)
+            return;
+        ArrayList<Integer> list = new ArrayList<>();
+        printAllRootToLeaf(node, list, 0);
+
+    }
+
+    private void printAllRootToLeaf(Node<Integer> node, ArrayList<Integer>  list, int ptr){
+
+        if(node == null)
+            return;
+
+        list.add(ptr, node.data);
+
+        // leaf node
+        if(node.left == null && node.right == null){
+            // print the array till the ptr
+            for(int i = 0 ; i <= ptr; i ++){
+                System.out.print(list.get(i) + ", ");
+            }
+            System.out.println();
+            return;
+        }
+        else{
+            printAllRootToLeaf(node.left, list, ptr +1 );
+            printAllRootToLeaf(node.right, list, ptr +1 );
+        }
+
+    }
+
+
+    private int findIndex(T[] arr, int start, int end, T val){
+        for(int i = start ; i < end; i ++){
+            if(arr[i].equals(val))
+                return  i;
+        }
+        return  -1;
+    }
+
+    public void sumFromRootToLeaf(Node<Integer> node){
+        if(node == null)
+            return;
+        ArrayList<Integer> list = new ArrayList<>();
+        sumFromRootToLeaf(node, list, 0);
+
+    }
+
+    private void sumFromRootToLeaf(Node<Integer> node, ArrayList<Integer>  list, int ptr){
+
+        if(node == null)
+            return;
+
+        list.add(ptr, node.data);
+
+        // leaf node
+        if(node.left == null && node.right == null){
+            // print the array till the ptr
+            int sum = 0;
+            for(int i = 0 ; i <= ptr; i ++){
+                sum += list.get(i);
+                //System.out.print(list.get(i) + ", ");
+            }
+            System.out.println(sum);
+            return;
+        }
+        else{
+            sumFromRootToLeaf(node.left, list, ptr + 1 );
+            sumFromRootToLeaf(node.right, list, ptr +1 );
+        }
+
+    }
+
+    public void populateNextRight(){
+
+    }
+
+    public  boolean hasPathSum(Node<Integer> node, int sum){
+
+        if(node == null){
+            return  sum == 0;
+        }
+        else{
+            boolean ans = false;
+
+            int subSum = sum - node.data;
+            if(subSum == 0 && node.left == null && node.right == null){
+                return  true;
+            }
+
+            if(node.left != null)
+                ans = ans || hasPathSum(node.left , subSum);
+            if(ans == true)
+                return  true;
+            if(node.right != null)
+                ans = ans || hasPathSum(node.right , subSum);
+            return  ans;
+        }
+    }// end of function
+
+
+    public Node<T> getTreeFromInorderAndPreorder(T[] preorder, T[] inOrder){
+
+        int preIndex = 0;
+
+        return  getTreeFromInorderAndPreorder(preorder, inOrder, preIndex, 0,  inOrder.length -1);
+    }
+    public Node<T> getTreeFromInorderAndPreorder(T[] preOrder, T[] inOrder, int preIndex, int start, int end){
+
+        if( start > end)
+            return null;
+
+        Node<T> node = new Node(preOrder[preIndex]);
+        preIndex ++;
+
+        int inOrderIndex = findIndex(inOrder, start, end, node.data);
+
+        node.left = getTreeFromInorderAndPreorder(preOrder, inOrder, preIndex, start, inOrderIndex -1);
+        node.right = getTreeFromInorderAndPreorder(preOrder, inOrder, preIndex, inOrderIndex +1, end);
+        return  node;
+    }
+
 
 }

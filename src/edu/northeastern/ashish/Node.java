@@ -6,12 +6,11 @@ public class Node<T> {
     public Node<T> left = null;
     public Node<T> right = null;
     public Node<T> parent = null;
+    public Node<T> nextRight = null;
 
     private Node(){}
 
     public Node(T data){
         this.data = data;
     }
-
-
 }
